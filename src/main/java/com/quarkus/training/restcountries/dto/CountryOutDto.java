@@ -1,4 +1,11 @@
 package com.quarkus.training.restcountries.dto;
 
-public class CountryOutDto {
-}
+import java.util.List;
+
+public record CountryOutDto(
+        String commonName,
+        String code,
+        String officialName,
+        List<String> currencies
+) {}
+

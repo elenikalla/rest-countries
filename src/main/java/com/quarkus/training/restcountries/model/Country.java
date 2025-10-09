@@ -1,4 +1,26 @@
 package com.quarkus.training.restcountries.model;
 
-public class Country {
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "countries")
+public class Country extends PanacheEntityBase {
+
+    @Id
+    @Column(nullable = false, unique = true)
+    public String code;
+
+    @Column(nullable = false)
+    public String commonName;
+
+    @Column(nullable = false)
+    public String officialName;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "country_currencies", joinColumns = @JoinColumn(name = "country_code"))
+    @Column(name = "currency")
+    public Set<String> currencies = new HashSet<>();
 }
