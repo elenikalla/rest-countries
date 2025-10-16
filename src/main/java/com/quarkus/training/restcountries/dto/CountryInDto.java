@@ -2,15 +2,24 @@ package com.quarkus.training.restcountries.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.Data;
 import java.util.Map;
 import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CountryInDto {
 
     @JsonProperty("cca2")
-    public String code;
+    private String code;
 
     @JsonProperty("name")
     private Map<String, Object> nameData;

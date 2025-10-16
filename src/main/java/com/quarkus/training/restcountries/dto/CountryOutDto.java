@@ -1,11 +1,11 @@
 package com.quarkus.training.restcountries.dto;
 
-import java.util.List;
+import java.util.Set;
 
 public record CountryOutDto(
         String commonName,
         String code,
         String officialName,
-        List<String> currencies
+        Set<String> currencies
 ) {}
 
