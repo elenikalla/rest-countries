@@ -4,12 +4,9 @@ package com.quarkus.training.restcountries.mapper;
 import com.quarkus.training.restcountries.dto.LanguageDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import org.oorsprong.websamples.TCountryInfo;
 import org.oorsprong.websamples.TLanguage;
 import com.quarkus.training.restcountries.dto.FullCountryInfoDto;
-
-import java.util.List;
 
 @Mapper(componentModel = "cdi")
 public interface SoapCountryMapper {
