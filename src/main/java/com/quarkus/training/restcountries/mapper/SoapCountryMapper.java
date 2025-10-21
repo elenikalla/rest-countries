@@ -1,6 +1,8 @@
 package com.quarkus.training.restcountries.mapper;
 
 
+import com.quarkus.training.restcountries.dto.CountryOutDto;
+import com.quarkus.training.restcountries.dto.CountrySoapDto;
 import com.quarkus.training.restcountries.dto.LanguageDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,4 +26,9 @@ public interface SoapCountryMapper {
     @Mapping(source = "SName", target = "name")
     LanguageDto languageToDto(TLanguage lang);
 
+    @Mapping(target = "code", source = "code")
+    @Mapping(target = "commonName", source = "commonName")
+    @Mapping(target = "officialName", source = "officialName")
+    @Mapping(target = "currencies", source = "currencies")
+    CountrySoapDto toSoapDto(CountryOutDto dto);
 }
