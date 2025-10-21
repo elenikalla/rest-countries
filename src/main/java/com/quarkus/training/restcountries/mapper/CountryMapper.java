@@ -15,7 +15,7 @@ public interface CountryMapper {
     Country toEntity(CountryInDto dto);
 
 
-    CountryOutDto toDto(Country entity); // MapStruct can handle this automatically
+    CountryOutDto toDto(Country entity);
 }
 
 

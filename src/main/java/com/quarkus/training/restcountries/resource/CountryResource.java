@@ -1,8 +1,8 @@
-package com.quarkus.training.restcountries.controller;
+package com.quarkus.training.restcountries.resource;
 
 import com.quarkus.training.restcountries.dto.CountryOutDto;
 import com.quarkus.training.restcountries.service.CountryService;
-import jakarta.inject.Inject;
+import com.quarkus.training.restcountries.soap.CountrySoapService;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import jakarta.ws.rs.*;
@@ -23,10 +23,15 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Countries", description = "Lookup countries by code and currency")
-public class CountryController {
+public class CountryResource {
 
-    @Inject
     CountryService service;
+    CountrySoapService soapClient;
+
+    public CountryResource(CountryService service, CountrySoapService soapClient) {
+        this.service = service;
+        this.soapClient = soapClient;
+    }
 
     @GET
     @Path("/currency/{currencyCode}")
@@ -94,5 +99,12 @@ public class CountryController {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.ok(List.of(dto)).build();
+    }
+    @GET
+    @Path("/{countryCode}")
+    public Response soapByCode(
+            @PathParam("countryCode")
+            String countryCode) {
+        return Response.ok(List.of(soapClient.getFullCountryInfo(countryCode))).build();
     }
 }
