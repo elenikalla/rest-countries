@@ -6,7 +6,6 @@ import com.quarkus.training.restcountries.service.CountryService;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
-
 import java.util.List;
 
 @WebService(
