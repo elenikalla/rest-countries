@@ -3,6 +3,9 @@ package com.quarkus.training.restcountries.resource;
 import com.quarkus.training.restcountries.dto.CountryOutDto;
 import com.quarkus.training.restcountries.service.CountryService;
 import com.quarkus.training.restcountries.soap.CountrySoapService;
+import io.quarkus.logging.Log;
+import io.smallrye.mutiny.Uni;
+import jakarta.inject.Inject;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import jakarta.ws.rs.*;
@@ -49,7 +52,7 @@ public class CountryResource {
             @APIResponse(responseCode = "404", description = "No countries found"),
             @APIResponse(responseCode = "500", description = "Internal server error")
     })
-    public Response byCurrency(
+    public Uni<Response> byCurrency(
             @Parameter(
                     description = "currency code (3 letters), e.g. 'EUR'",
                     required = true,
@@ -60,11 +63,30 @@ public class CountryResource {
             @Pattern(regexp = "^[A-Za-z]{3}$", message = "currencyCode must contain only letters")
             String currencyCode
     ) {
-        List<CountryOutDto> list = service.fetchByCurrency(currencyCode);
-        if (list.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return Response.ok(list).build();
+        Log.info("Currency code: " + currencyCode + "");
+        Log.info("Currency code: " + currencyCode);
+
+        return service.fetchByCurrency(currencyCode)
+                .onItem().invoke(countries -> {
+                    Log.info("Fetched " + countries.size() + " countries from DB");
+                    countries.forEach(c -> Log.infof(" - %s (%s)", c.commonName(), c.code()));
+                })
+                .onFailure().invoke(err -> Log.error("Error fetching countries", err))
+                .onItem().transform(countries -> {
+                    if (countries.isEmpty()) {
+                        Log.warn("No countries found for " + currencyCode);
+                        return Response.status(Response.Status.NOT_FOUND).build();
+                    }
+                    return Response.ok(countries).build();
+                });
+
+//        return service.fetchByCurrency(currencyCode)
+//                .onItem().transform(countries -> {
+//                    if (countries.isEmpty()) {
+//                        return Response.status(Response.Status.NOT_FOUND).build();
+//                    }
+//                    return Response.ok(countries).build();
+//                });
     }
 
     @GET
@@ -83,7 +105,7 @@ public class CountryResource {
             @APIResponse(responseCode = "404", description = "Country not found"),
             @APIResponse(responseCode = "500", description = "Internal server error")
     })
-    public Response byCode(
+    public Uni<Response> byCode(
             @Parameter(
                     description = "Code (2 letters), e.g. 'GR'",
                     required = true,
@@ -94,17 +116,29 @@ public class CountryResource {
             @Pattern(regexp = "^[A-Za-z]{2}$", message = "countryCode must contain only letters")
             String countryCode
     ) {
-        CountryOutDto dto = service.fetchByCode(countryCode);
-        if (dto == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return Response.ok(List.of(dto)).build();
+        return service.fetchByCode(countryCode)
+                .onItem().transform(country -> {
+                    if (country==null) {
+                        return Response.status(Response.Status.NOT_FOUND).build();
+                    }
+                    return Response.ok(country).build();
+                });
     }
-    @GET
-    @Path("/{countryCode}")
-    public Response soapByCode(
-            @PathParam("countryCode")
-            String countryCode) {
-        return Response.ok(List.of(soapClient.getFullCountryInfo(countryCode))).build();
-    }
+//    @GET
+//    @Path("/{countryCode}")
+//    public Response soapByCode(
+//            @PathParam("countryCode")
+//            String countryCode) {
+//        return Response.ok(List.of(soapClient.getFullCountryInfo(countryCode))).build();
+//    }
+//    @GET
+//    @Path("/{countryCode}")
+//    public Uni<Response> soapByCode(@PathParam("countryCode") String countryCode) {
+//        return soapClient.getFullCountryInfoReactive(countryCode)
+//                .onItem().ifNull().continueWith(Response.status(Response.Status.NOT_FOUND)::build)
+//                .onItem().transform(dto -> Response.ok(dto).build())
+//                .onFailure().recoverWithItem(err ->
+//                        Response.status(Response.Status.BAD_GATEWAY).entity(err.getMessage()).build()
+//                );
+//    }
 }

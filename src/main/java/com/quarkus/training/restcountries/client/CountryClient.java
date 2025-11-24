@@ -1,6 +1,7 @@
 package com.quarkus.training.restcountries.client;
 
 import com.quarkus.training.restcountries.dto.CountryInDto;
+import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -16,7 +17,6 @@ public interface CountryClient {
 
     @GET
     @Path("/all")
-    List<CountryInDto> getAllCountries(@QueryParam("fields") String fields);
-
+    Uni<List<CountryInDto>> getAllCountries(@QueryParam("fields") String fields);
 
 }

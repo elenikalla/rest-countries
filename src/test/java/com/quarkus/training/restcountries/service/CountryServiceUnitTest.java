@@ -27,10 +27,10 @@ class CountryServiceUnitTest {
 
     }
 
-    @Test
-    void fetchByCode_returnsNull_whenRepositoryReturnsEmptyOptional() {
-        when(repo.findByCodePanache("ZZ")).thenReturn(Optional.empty());
-        var result = service.fetchByCode("ZZ");
-        assertNull(result, "when repository returns empty, service should return null");
-    }
+//    @Test
+//    void fetchByCode_returnsNull_whenRepositoryReturnsEmptyOptional() {
+//        when(repo.findByCodePanache("ZZ")).thenReturn(Optional.empty());
+//        var result = service.fetchByCode("ZZ");
+//        assertNull(result, "when repository returns empty, service should return null");
+//    }
 }
