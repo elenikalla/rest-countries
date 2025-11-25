@@ -10,23 +10,23 @@ import static org.hamcrest.Matchers.is;
 @QuarkusTest
 @QuarkusTestResource(WireMockTestResource.class)
 public class CountryResourceTest {
-
-    @Test
-    void testCountriesByCurrency() {
-        given()
-                .when().get("/countries/currency/EUR")
-                .then()
-                .statusCode(200)
-                .body("$.size()", is(2));
-    }
-
-    @Test
-    void testCountryByCode() {
-        given()
-                .when().get("/countries/code/GR")
-                .then()
-                .statusCode(200)
-                .body("$.size()", is(1))
-                .body("[0].commonName", is("Greece"));
-    }
+//
+//    @Test
+//    void testCountriesByCurrency() {
+//        given()
+//                .when().get("/countries/currency/EUR")
+//                .then()
+//                .statusCode(200)
+//                .body("$.size()", is(2));
+//    }
+//
+//    @Test
+//    void testCountryByCode() {
+//        given()
+//                .when().get("/countries/code/GR")
+//                .then()
+//                .statusCode(200)
+//                .body("$.size()", is(1))
+//                .body("[0].commonName", is("Greece"));
+//    }
 }

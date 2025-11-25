@@ -124,6 +124,20 @@ public class CountryResource {
                     return Response.ok(country).build();
                 });
     }
+
+    @GET
+    @Path("/{countryCode}")
+    public Uni<Response> soapByCode(@PathParam("countryCode") String countryCode) {
+        return soapClient.getFullCountryInfoReactive(countryCode)
+//                .onItem().ifNull().continueWith(Response.status(Response.Status.NOT_FOUND)::build)
+                .onItem().transform(dto -> Response.ok(dto).build())
+                .onFailure().recoverWithItem(err ->
+                        Response.status(Response.Status.BAD_GATEWAY).entity(err.getMessage()).build()
+                );
+    }
+
+
+}
 //    @GET
 //    @Path("/{countryCode}")
 //    public Response soapByCode(
@@ -131,14 +145,3 @@ public class CountryResource {
 //            String countryCode) {
 //        return Response.ok(List.of(soapClient.getFullCountryInfo(countryCode))).build();
 //    }
-//    @GET
-//    @Path("/{countryCode}")
-//    public Uni<Response> soapByCode(@PathParam("countryCode") String countryCode) {
-//        return soapClient.getFullCountryInfoReactive(countryCode)
-//                .onItem().ifNull().continueWith(Response.status(Response.Status.NOT_FOUND)::build)
-//                .onItem().transform(dto -> Response.ok(dto).build())
-//                .onFailure().recoverWithItem(err ->
-//                        Response.status(Response.Status.BAD_GATEWAY).entity(err.getMessage()).build()
-//                );
-//    }
-}
